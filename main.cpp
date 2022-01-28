@@ -4,6 +4,10 @@
 //  Project: UALR - Programming 2 - Spring 22 - Power Play 2
 //  Created by: Mark McCorkle on 20220128
 //  Based on: Power Play 1 by Sean Orme
+//  IDE: CLion 2021.2.3     - VERIFIED/UNVERIFIED
+//  IDE: XCode              - VERIFIED/UNVERIFIED
+//  IDE: Visual Studio 2022 - VERIFIED/UNVERIFIED
+//  IDE: Linux via g++      - VERIFIED/UNVERIFIED
 //
 #include <iostream>
 #include <string>
