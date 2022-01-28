@@ -61,11 +61,13 @@
     heal();
 
  */
+// TODO: Alphabetize/order the includes
 #include <iostream>
 #include <string>
 #include <vector>
 #include <random>
 #include <algorithm>
+#include <fstream>
 
 struct Object
 {
@@ -75,7 +77,7 @@ struct Object
 };
 
 // Function Prototypes:
-void loadMonsters(  );
+std::vector<Object> loadMonsters( const std::string& );
 void displayBattle(  );
 void monsterAttack(  );
 void playerAttack(  );
@@ -96,7 +98,8 @@ int main()
                     std::max(1, (int)randomStrength(engine)),
                     std::max(1, (int)randomHealth(engine))
             };
-    std::vector<Object> monsters;
+    std::vector<Object> monsters{ loadMonsters( "monsters.txt" ) };
+
     std::uniform_int_distribution<int> randomNumMonsters(1, 3);
 
     int numMonsters{ randomNumMonsters(engine) };
@@ -190,9 +193,42 @@ int main()
 }
 
 // This function loads the monsters from the passed in file and returns the vector. You’ll need a for loop.
-void loadMonsters()
+std::vector<Object> loadMonsters( const std::string& fileName )
 {
+    // Create the vector of monsters:
+    std::vector<Object> monsters;
 
+    // Create the input file stream object:
+    std::ifstream fin;
+
+    // Open the file for input:
+    fin.open( fileName );
+
+    // Import the data from the file:
+    if(!fin.is_open())
+        std::cout << "[ERROR]: File not found!" << std::endl;
+    else
+    {
+        // First line is the number of monsters then name, strength and health for each.
+        int numMonsters{ 0 };           // Variable to hold the number of monsters
+        fin >> numMonsters;             // Retrieve the number of monsters
+        for( size_t i{ 0 }; i < numMonsters; ++i )
+        {
+            // Add a blank monster to avoid the use of a temp object
+            monsters.push_back( {} );
+
+            // Assign the values to the previously defined monster object
+            fin >> monsters.back().name;
+            fin >> monsters.back().strength;
+            fin >> monsters.back().health;
+        }
+    }
+
+    // Close the file object:
+    fin.close();
+
+    // Return the reference to the monsters vector back to the calling function:
+    return monsters;
 }
 
 // Almost a copy and paste from PP1
