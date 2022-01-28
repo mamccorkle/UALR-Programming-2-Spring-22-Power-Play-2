@@ -100,19 +100,7 @@ int main()
             };
     std::vector<Object> monsters{ loadMonsters( "monsters.txt" ) };
 
-    std::uniform_int_distribution<int> randomNumMonsters(1, 3);
-
-    int numMonsters{ randomNumMonsters(engine) };
-    for (int i{ 0 }; i < numMonsters; i++)
-    {
-        monsters.push_back({
-                                   "monster " + std::to_string(i + 1),
-                                   std::max(1, (int)randomStrength(engine)),
-                                   std::max(1, (int)randomHealth(engine))
-                           });
-    }
-
-    std::cout << numMonsters << " monster(s) approaches!!" << std::endl;
+    std::cout << monsters.size() << " monster(s) approaches!!" << std::endl;
     bool allDead{ false };
     while (player.health > 0 && !allDead)
     {
