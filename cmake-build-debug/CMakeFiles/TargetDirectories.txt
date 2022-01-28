@@ -1,0 +1,3 @@
+C:/Users/decyple/iCloudDrive/Code/C++/UALR - Programming 2 - S22/Power Play 2/cmake-build-debug/CMakeFiles/edit_cache.dir
+C:/Users/decyple/iCloudDrive/Code/C++/UALR - Programming 2 - S22/Power Play 2/cmake-build-debug/CMakeFiles/Power_Play_2.dir
+C:/Users/decyple/iCloudDrive/Code/C++/UALR - Programming 2 - S22/Power Play 2/cmake-build-debug/CMakeFiles/rebuild_cache.dir
