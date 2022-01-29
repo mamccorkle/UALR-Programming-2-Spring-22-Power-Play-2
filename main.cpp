@@ -4,63 +4,11 @@
 //  Project: UALR - Programming 2 - Spring 22 - Power Play 2
 //  Created by: Mark McCorkle on 20220128
 //  Based on: Power Play 1 by Sean Orme
-//  IDE: CLion 2021.2.3     - VERIFIED
+//  IDE: CLion 2021.2.3     - VERIFIED WORKING
 //  IDE: XCode              - VERIFIED/UNVERIFIED
 //  IDE: Visual Studio 2022 - VERIFIED/UNVERIFIED
 //  IDE: Linux via g++      - VERIFIED/UNVERIFIED
 //
-/*
-
-    For this PP we will be separating our code out into functions. We will also be changing up two pieces of
-    functionality:
-
-    1)  Damage dealt on attacks are based on a normal distribution with the mean being the object’s strength and a
-        standard deviation of 2.
-    2)  We are loading the monsters from a file. I have a “monsters.txt” file that looks like this:
-
-        3
-        Dragon
-        5
-        50
-        Imp
-        1
-        3
-        Orc
-        4
-        25
-
-    First line is the number of monsters then name, strength and health for each.
-
-    We will be dividing up the code into the following functions (NOTE:: the declarations should be at the top of the
-    file and the definitions at the end) (NOTE2:: You must decide return types and parameters!
-
-    This function loads the monsters from the passed in file and returns the vector. You’ll need a for loop.
-    loadMonsters();
-
-    Almost a copy and paste from PP1
-    displayBattle();
-
-    Almost a copy and paste from PP1
-    monsterAttack();
-
-    Almost a copy and paste from PP1
-    playerAttack();
-
-    returns damage done using normal distribution and the passed in object’s strength. I also output the object’s name,
-    along with “ deals “ mean: attacker.strength, stdev: 2.0
-    attack();
-
-    takes the defending object and the damage being done. subtracts the damage from the defender’s health. outputs:
-    damage << " damage to " << object.name << "!!!" << std::endl;
-    The code for a fight looks like this for the player attacking a monster:
-     defend(monsters[monsterNum - 1], attack(player));
-    defend();
-
-    uses a normal distribution with median of strength*2 and standard deviation of 3. adds random amount to object’s
-    health.
-    heal();
-
-*/
 #include <algorithm>
 #include <fstream>
 #include <iostream>
@@ -102,7 +50,11 @@ int main()
     };
     std::vector<Object> monsters{ loadMonsters( "monsters.txt" ) };
 
-    std::cout << monsters.size() << " monster(s) approaches!!" << std::endl;
+    // Proper grammar :)
+    if( monsters.size() > 1 )
+        std::cout << monsters.size() << " monsters approach!!" << std::endl;
+    else
+        std::cout << monsters.size() << " monster approaches!!" << std::endl;
 
     while (player.health > 0 && !allDead)
     {
@@ -197,15 +149,15 @@ void displayBattle( const Object& player, const std::vector<Object>& monsters )
     std::cout   << player.name
                 << ": "
                 << player.health
-                << std::endl
-                << "  Monsters: " << std::endl;
+                << " hp\n"
+                << "Monsters: " << std::endl;
     for (int i{ 0 }; i < monsters.size(); i++)
     {
         std::cout << "   " << i + 1 << ". " << monsters[i].name << ": ";
         if (monsters.at(i).health <= 0)
             std::cout << "<DEAD> " << std::endl;
         else
-            std::cout << monsters[i].health << std::endl;
+            std::cout << monsters[i].health << " hp\n";
     }
 }
 
@@ -271,6 +223,6 @@ void heal( Object& object )
 {
     std::normal_distribution<double> healAmount( object.strength * 2.0, 3.0 );
     int healPoints{ std::max( 1, static_cast<int>( healAmount( engine ))) };
-    std::cout << object.name << " is healed by " << healPoints << "hp!\n";
+    std::cout << object.name << " is healed by " << healPoints << " hp!\n";
     object.health += healPoints;
 }
