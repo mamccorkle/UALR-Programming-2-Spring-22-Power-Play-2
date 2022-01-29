@@ -85,21 +85,22 @@ std::vector<Object> loadMonsters( const std::string& );
 void displayBattle( const Object&, const std::vector<Object>& );
 void monsterAttack( Object&, const std::vector<Object>& );
 void playerAttack( Object&, std::vector<Object>& );
-void attack(  );
-void defend(  );
-void heal(  );
+int attack( const Object& );
+void defend( Object&, int );
+void heal( Object& );
 
 int main()
 {
     std::normal_distribution<double> randomHealth(30.0, 5.0);
     std::normal_distribution<double> randomStrength(5.0, 1.0);
 
+    // Create the player object and the monster container:
     Object player
-            {
-                    "Mr. Orme",
-                    std::max(1, (int)randomStrength(engine)),
-                    std::max(1, (int)randomHealth(engine))
-            };
+    {
+            "Fred",
+            std::max( 1, (int)randomStrength(engine) ),
+            std::max( 1, (int)randomHealth(engine) )
+    };
     std::vector<Object> monsters{ loadMonsters( "monsters.txt" ) };
 
     std::cout << monsters.size() << " monster(s) approaches!!" << std::endl;
@@ -279,6 +280,7 @@ void monsterAttack( Object& player, const std::vector<Object>& monsters )
 // Almost a copy and paste from PP1
 void playerAttack( Object& player, std::vector<Object>& monsters )
 {
+    // TODO: add attack() where needed
     std::cout << "What do you do? (a)ttack (h)eal ";
     char command{  };
     std::cin >> command;
@@ -307,23 +309,28 @@ void playerAttack( Object& player, std::vector<Object>& monsters )
 
 // Returns damage done using normal distribution and the passed in object’s strength.
 //    I also output the object’s name, along with “ deals “ mean: attacker.strength, stdev: 2.0
-void attack()
+int attack( const Object& object )
 {
-
+    std::normal_distribution<double> damageDone( object.strength, 2.0 );
+    std::cout << object.name << " deals ";
+    return std::max( 1, static_cast<int>( damageDone( engine ) ) );
 }
 
-// Takes the defending object and the damage being done. subtracts the damage from the defender’s health. outputs:
+// Takes the defending object and the damage being done. subtracts the damage from the defender’s health.
+// outputs:
 //    damage << " damage to " << object.name << "!!!" << std::endl;
 //    The code for a fight looks like this for the player attacking a monster:
 //     defend(monsters[monsterNum - 1], attack(player));
-void defend()
+void defend( Object& object, int damage )
 {
-
+    std::cout << damage << " damage to " << object.name << "!!!" << std::endl;
+    object.health -= damage;
 }
 
 // Uses a normal distribution with median of strength*2 and standard deviation of 3. adds random amount to object’s
 //    health.
-void heal()
+void heal( Object& object )
 {
-
+    std::normal_distribution<double> healAmount( object.strength * 2.0, 3.0 );
+    object.strength += healAmount( engine );
 }
