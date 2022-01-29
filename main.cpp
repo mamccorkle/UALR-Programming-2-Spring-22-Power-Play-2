@@ -60,31 +60,30 @@
     health.
     heal();
 
- */
-// TODO: Alphabetize/order the includes
-#include <iostream>
-#include <string>
-#include <vector>
-#include <random>
+*/
 #include <algorithm>
 #include <fstream>
+#include <iostream>
+#include <random>
+#include <string>
+#include <vector>
 
 // Globals:
 struct Object
 {
-    std::string name;
+    std::string name{ "" };
     int strength{ 0 };
     int health{ 0 };
 };
 std::random_device seed;
-std::default_random_engine engine(seed());
+std::default_random_engine engine( seed() );
 bool allDead{ false };
 
 // Function Prototypes:
 std::vector<Object> loadMonsters( const std::string& );
 void displayBattle( const Object&, const std::vector<Object>& );
 void monsterAttack( Object&, const std::vector<Object>& );
-void playerAttack( Object&, std::vector<Object>& );
+void playerAttack( const Object&, std::vector<Object>& );
 int attack( const Object& );
 void defend( Object&, int );
 void heal( Object& );
@@ -97,9 +96,9 @@ int main()
     // Create the player object and the monster container:
     Object player
     {
-            "Fred",
-            std::max( 1, (int)randomStrength(engine) ),
-            std::max( 1, (int)randomHealth(engine) )
+        "Fred",
+        std::max( 1, (int)randomStrength(engine) ),
+        std::max( 1, (int)randomHealth(engine) )
     };
     std::vector<Object> monsters{ loadMonsters( "monsters.txt" ) };
 
@@ -111,72 +110,28 @@ int main()
         // Display player and monster stats moved to the displayBattle function:
         displayBattle( player, monsters );
 
-        // <START> Display player and monster stats:
-        //            std::cout << player.name << ": " << player.health << std::endl
-        //                      << "  Monsters: " << std::endl;
-        //            for (int i{ 0 }; i < monsters.size(); i++)
-        //            {
-        //                std::cout << "   " << i + 1 << ". " << monsters[i].name << ": ";
-        //                if (monsters.at(i).health <= 0)
-        //                    std::cout << "<DEAD> " << std::endl;
-        //                else
-        //                    std::cout << monsters[i].health << std::endl;
-        //            }
-        // <END>
-
-        // Player attack functionality has been moved to the playerAttack function:
-        playerAttack( player, monsters );
-
-        // <START> Player Attack
-        //            std::cout << "What do you do? (a)ttack (h)eal ";
-        //            char command{  };
-        //            std::cin >> command;
-        //            switch (command)
-        //            {
-        //                case 'a':
-        //                {
-        //                    std::cout << "Which Monster: ";
-        //                    int monsterNum{ 0 };
-        //                    std::cin >> monsterNum;
-        //                    if (monsterNum > 0 && monsterNum <= monsters.size())
-        //                    {
-        //                        if(monsters.at(monsterNum -1).health >0)
-        //                            monsters[monsterNum - 1].health -= player.strength;
-        //                    }
-        //                    break;
-        //                }
-        //                case 'h':
-        //                    player.health += player.strength * 2;
-        //                    break;
-        //                default:
-        //                    std::cout << "please enter a or h" << std::endl;
-        //                    break;
-        //            }
-        // <END>
+        std::cout << "What do you do? (a)ttack (h)eal ";
+        char command{  };
+        std::cin >> command;
+        switch (command)
+        {
+            case 'a':
+            {
+                // Player attack functionality has been moved to the playerAttack function:
+                playerAttack( player, monsters );
+                break;
+            }
+            case 'h':
+                // Healing functionality has been moved to the heal function:
+                heal( player );
+                break;
+            default:
+                std::cout << "please enter a or h" << std::endl;
+                break;
+        }
 
         // Monster attack functionality has been moved to the monsterAttack function:
         monsterAttack( player, monsters );
-
-        // <START> Monster Attack
-        //            std::bernoulli_distribution willAttack(.75);
-        //            allDead = true;
-        //            for (const auto& monster : monsters)
-        //            {
-        //                if (monster.health > 0)
-        //                {
-        //                    allDead = false;
-        //                    if (willAttack(engine))
-        //                    {
-        //                        std::cout << monster.name << " attacks!" << std::endl;
-        //                        player.health -= monster.strength;
-        //                    }
-        //                    else
-        //                    {
-        //                        std::cout << monster.name << " twiddles its thumbs" << std::endl;
-        //                    }
-        //                }
-        //            }
-        // <END>
 
         system("PAUSE");
         system("CLS");
@@ -257,7 +212,7 @@ void displayBattle( const Object& player, const std::vector<Object>& monsters )
 // Almost a copy and paste from PP1
 void monsterAttack( Object& player, const std::vector<Object>& monsters )
 {
-    std::bernoulli_distribution willAttack(.75);
+    std::bernoulli_distribution willAttack(0.75);
     allDead = true;
     for (const auto& monster : monsters)
     {
@@ -267,7 +222,7 @@ void monsterAttack( Object& player, const std::vector<Object>& monsters )
             if( willAttack(engine) )
             {
                 std::cout << monster.name << " attacks!" << std::endl;
-                player.health -= monster.strength;
+                defend( player, attack( monster ) );
             }
             else
             {
@@ -278,32 +233,15 @@ void monsterAttack( Object& player, const std::vector<Object>& monsters )
 }
 
 // Almost a copy and paste from PP1
-void playerAttack( Object& player, std::vector<Object>& monsters )
+void playerAttack( const Object& player, std::vector<Object>& monsters )
 {
-    // TODO: add attack() where needed
-    std::cout << "What do you do? (a)ttack (h)eal ";
-    char command{  };
-    std::cin >> command;
-    switch (command)
+    std::cout << "Which Monster: ";
+    int monsterNum{ 0 };
+    std::cin >> monsterNum;
+    if( monsterNum > 0 && monsterNum <= monsters.size() )
     {
-        case 'a':
-        {
-            std::cout << "Which Monster: ";
-            int monsterNum{ 0 };
-            std::cin >> monsterNum;
-            if (monsterNum > 0 && monsterNum <= monsters.size())
-            {
-                if(monsters.at(monsterNum -1).health >0)
-                    monsters[monsterNum - 1].health -= player.strength;
-            }
-            break;
-        }
-        case 'h':
-            player.health += player.strength * 2;
-            break;
-        default:
-            std::cout << "please enter a or h" << std::endl;
-            break;
+        if( monsters.at(monsterNum -1).health > 0 )
+            defend( monsters[monsterNum - 1], attack( player ) );
     }
 }
 
@@ -332,5 +270,7 @@ void defend( Object& object, int damage )
 void heal( Object& object )
 {
     std::normal_distribution<double> healAmount( object.strength * 2.0, 3.0 );
-    object.strength += healAmount( engine );
+    int healPoints{ std::max( 1, static_cast<int>( healAmount( engine ))) };
+    std::cout << object.name << " is healed by " << healPoints << "hp!\n";
+    object.health += healPoints;
 }
