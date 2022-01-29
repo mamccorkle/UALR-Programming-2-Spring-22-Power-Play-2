@@ -82,8 +82,14 @@ int main()
                 break;
         }
 
-        // Monster attack functionality has been moved to the monsterAttack function:
-        monsterAttack( player, monsters );
+        // NOTE: The below command is the original function call and works fine. However, a bug is produced if the user
+        // does not enter an 'a' or 'h'. The bug happens when the user enters something other than 'a' or 'h' and
+        // subsequently the monsters attack despite the invalid menu selection. To solve this I added an if statement
+        // to prevent the bug. It could have also been implemented into the switch case above.
+        //// Monster attack functionality has been moved to the monsterAttack function:
+        //monsterAttack( player, monsters );
+        if( command == 'a' || command == 'h' )
+            monsterAttack( player, monsters );
 
         system("PAUSE");
         system("CLS");
